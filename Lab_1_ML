@@ -1,0 +1,65 @@
+#Импортируем файлы 
+import pandas as pd
+data = pd.read_csv('casc-resto.csv', sep=';', error_bad_lines=False, parse_dates = ['RKDate'])
+print(data.info())
+
+import pandas as pd
+data_d = pd.read_csv('CASC_Constant.csv', sep=',', error_bad_lines=False) 
+
+import pandas as pd
+data_small = pd.read_csv('casc-resto-small.csv', sep=',', error_bad_lines=False) 
+  
+#зафиксируем дату
+import datetime
+july_first = datetime.date(2017, 7, 1) 
+
+#Опеределить посещал ли клиент ресторан и записать в отдельный стобец 
+december_thirty_first = datetime.date(2017, 12, 31) 
+import numpy as np
+data = data.index(columns = np.append( data.columns.values, ['is_visited']) 
+i =datetime.date(0, 0, 0)
+for i in data['RKDate'] :
+         if(( i > july_first)  & (i < december_thirty_first))
+          data.fillna(data['is_visited'] = true)
+          else data.fillna(data['is_visited'] = false)
+
+#Количество дней до послденего визита           
+july_first = datetime.date(2017, 7, 1)
+last_date =  data['RKDate']
+for d in data:
+    Recency = last_date - july_first
+    
+#Средний чек   
+for d in data:
+    if (data[RKDate] < july_first)
+    average_check = data['Restaurant']//data['Quantity']
+
+Monetary Value = average(average_check)
+
+#Средний чек попытка №2
+data.groupby('data[RKDate] < july_first')[[data['Restaurant']//data['Quantity']]].mean() 
+
+ #Объединение таблиц 
+import pandas as pd
+data_common = pd.merge(left=data, right=data_d, left_on='CustomerID', right_on='CustomerId')
+
+#разделение на выборки 
+from sklearn import cross_validation, datasets
+import numpy as np
+
+train_data, test_data, train_labels, test_labels = cross_validation.train_test_split(data.data, data.target, test_size = 0.2)
+
+float(len(test_labels))/len(data.data)
+
+print 'Размер обучающей выборки: {} объектов \n Размер тестовой выборки: {} объектов'.format(len(train_data), len(test_data))
+
+#Кросс-валидация 
+for train_indices, test_indices in cross_validation.KFold(10, n_folds = 5, shuffle = True, random_state = 1):
+    print train_indices, test_indices
+    
+#Создание модели 
+from sklearn.linear_model import LogisticRegression
+logisticRegr = LogisticRegression ()
+logisticRegr.fit (train_data, train_labels)
+logisticRegr.predict (test_data [0] .reshape (1, -1))
+prediction = logisticRegr.predict (test_data)
