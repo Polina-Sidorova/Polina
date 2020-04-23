@@ -1,6 +1,6 @@
 #Импортируем файлы 
 import pandas as pd
-data = pd.read_csv('casc-resto.csv', sep=';', error_bad_lines=False, parse_dates = ['RKDate'])
+data = pd.read_csv('casc-resto.csv', sep=';', error_bad_lines=False)
 print(data.info())
 
 import pandas as pd
@@ -8,54 +8,111 @@ data_d = pd.read_csv('CASC_Constant.csv', sep=',', error_bad_lines=False)
 
 import pandas as pd
 data_small = pd.read_csv('casc-resto-small.csv', sep=',', error_bad_lines=False) 
-  
+
+#Нужно очистить данные от пустых значений
+data.dropna()
+print(data.info())
+
+#Нужно убрать отрицательные значения
+
+ 
+#Переделаем столбец RKDate в тип даты
+data.RKDate = data.RKDate.apply(pd.to_datetime)
+print (data.dtypes)
+ 
 #зафиксируем дату
 import datetime
 july_first = datetime.date(2017, 7, 1) 
 
+#------------------------------------------------------------------------------
 #Опеределить посещал ли клиент ресторан и записать в отдельный стобец 
-december_thirty_first = datetime.date(2017, 12, 31) 
-import numpy as np
-data = data.index(columns = np.append( data.columns.values, ['is_visited']) 
-i =datetime.date(0, 0, 0)
-for i in data['RKDate'] :
-         if(( i > july_first)  & (i < december_thirty_first))
-          data.fillna(data['is_visited'] = true)
-          else data.fillna(data['is_visited'] = false)
 
-#Количество дней до послденего визита           
+#Создание новой таблицы с клиентами, которые посещали ресторан с 1 июня до 31 декабря 
+data_july_december = data[(data['RKDate'] >= pd.datetime(2017,7,1)) & (data['RKDate'] <=pd.datetime(2017,12,31))]
+print(data_july_december.info())
+
+#Создадим новый стобец со знчениями по умолчанию 0
+data['Is_visited'] = [0]*882222
+print(data.head())
+
+#Создадим новую таблицу
+data_is_visited = pd.DataFrame(columns = ['CustomerId','Is_visited'])
+print (data_is_visited)
+
+data_is_visited.groupby()
+#for index in range(len(data_customer['CustomerId'])):
+ #   if(data['CustomerID'][index] = data_july_december['CustomerID'][index])
+for index in range(len(data['CustomerID'])):
+    if(data['CustomerID'] = data_july_december['CustomerID']):
+         #if(( index > july_first)  & (index < december_thirty_first)):
+          data.fillna(data['Is_visited'] = true
+    
+    
+#Женин пример подсчета
+#Мб надо перевести датафрейм в сериес
+
+for index in range(len(data_d['CustomerId'])):
+    if(data_d['CustomerId'][index] in data_july_december['CustomerID'].values    
+        data_is_visited.loc[index] = [data_d['CustomerId'][index],1]
+        else:
+             data_is_visited.loc[index] = [data_d['CustomerId'][index],0]
+print(data_is_visited.info())
+
+#------------------------------------------------------------------------------
+#Расчитать Recency - Количество дней с последнего визита до 1 июля 
+#Группировка клиентов по дате посещения ресторана
+data.groupby(['CustomerID'])['RKDate'].max()
+
+#Занесем все даты до 1 июля в отдельную таблицу
+data_visit_before_july_1 = data[data['RKDate'] < pd.datetime(2017,7,1)]
+print(data_visit_before_july_1.head())
+
+data_visit_before_july_1.groupby(['CustomerID'])['RKDate'].max()
+
+#Создадим таблицу с данными подсчета 
+data_recency = pd.DataFrame(columns = ['CustomerId', 'Days'])
+print(data_recency)
+
+for index in range(len(data_visit_before_july_1['RKDate'])):
+    recency = pd.datetime(2017,7,1) - data_visit_before_july_1['RKDate']
+    data_recency.groupby()
+    data_recency = fillna.(data_recency['Days'] = recency)
+print(data_recency)    
+
+import datetime          
 july_first = datetime.date(2017, 7, 1)
 last_date =  data['RKDate']
 for d in data:
     Recency = last_date - july_first
-    
-#Средний чек   
-for d in data:
-    if (data[RKDate] < july_first)
-    average_check = data['Restaurant']//data['Quantity']
 
-Monetary Value = average(average_check)
 
-#Средний чек попытка №2
-data.groupby('data[RKDate] < july_first')[[data['Restaurant']//data['Quantity']]].mean() 
+#------------------------------------------------------------------------------   
+#Средний чек на клиента по покупкам до 1 июля
+#Создадим таблицу со средними чеками Monetary Value
+monetary_value = pd.DataFrame(columns = ['CustomerId', 'Average_check'])
+#Запишем в таблицу данные
+monetary_value = data_visit_before_july_1.groupby(['CustomerID'])['Restaurant'].mean()
+print(monetary_value)
 
+#------------------------------------------------------------------------------
  #Объединение таблиц 
 import pandas as pd
 data_common = pd.merge(left=data, right=data_d, left_on='CustomerID', right_on='CustomerId')
 
+#------------------------------------------------------------------------------
 #разделение на выборки 
 from sklearn import cross_validation, datasets
 import numpy as np
 
-train_data, test_data, train_labels, test_labels = cross_validation.train_test_split(data.data, data.target, test_size = 0.2)
+train_data, test_data, train_labels, test_labels = cross_validation.train_test_split(data.data, data.target, test_size = 0.2, random_state = 42)
 
 float(len(test_labels))/len(data.data)
 
-print 'Размер обучающей выборки: {} объектов \n Размер тестовой выборки: {} объектов'.format(len(train_data), len(test_data))
+print ('Размер обучающей выборки: {} объектов \n Размер тестовой выборки: {} объектов'.format(len(train_data), len(test_data)))
 
 #Кросс-валидация 
-for train_indices, test_indices in cross_validation.KFold(10, n_folds = 5, shuffle = True, random_state = 1):
-    print train_indices, test_indices
+for train_indices, test_indices in cross_validation.KFold(10, n_folds = 5, shuffle = True, random_state = 42):
+    print (train_indices, test_indices)
     
 #Создание модели 
 from sklearn.linear_model import LogisticRegression
